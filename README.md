@@ -83,33 +83,56 @@ Visual gauging uses YOLOv8 object detection to identify water level markings and
 
 **Location**: `visualGuage`
 
-### Dataset Structure
+### Dataset Organization
 
-YOLO expects bounding box labeled data:
+The Visual Gauging datasets are organized in the `visualGuage` directory with three variants:
 
 ```text
-augmentedDataSet/
-├── data.yaml
-├── train/
-│   ├── images/
-│   └── labels/  (YOLO format: class_id x_center y_center width height)
-├── val/
-│   ├── images/
-│   └── labels/
-└── test/
-    ├── images/
-    └── labels/
+visualGuage/
+├── rawData/
+│   └── (Unlabeled raw images from water level monitoring)
+│
+├── labeledData/
+│   ├── data.yaml
+│   ├── train/
+│   │   ├── images/
+│   │   └── labels/
+│   ├── val/
+│   │   ├── images/
+│   │   └── labels/
+│   └── test/
+│       ├── images/
+│       └── labels/
+│
+├── YOLO_n+s_local/
+│   ├── augmentedDataSet/
+│   │   ├── data.yaml
+│   │   ├── train/
+│   │   │   ├── images/
+│   │   │   └── labels/
+│   │   ├── val/
+│   │   │   ├── images/
+│   │   │   └── labels/
+│   │   └── test/
+│   │       ├── images/
+│   │       └── labels/
+│   ├── yolov8.ipynb
+│   ├── yolov8n.pt
+│   └── yolov8s.pt
+│
+└── YOLOv8l_colab/
+    └── YOLOV8l_Colab.ipynb
 ```
 
-Example `data.yaml`:
+**Dataset Descriptions**:
 
-```yaml
-train: train/images
-val: val/images
-test: test/images
-nc: 12
-names: ['0.2', '0.3', '0.4', '1', '1.1', '1.2', '1.3', '1.5', '2.1', '2.3', 'Water Level', 'staff gauge']
-```
+- **rawData**: Original unlabeled images from water level monitoring cameras. Use these for initial exploration or to create custom annotations.
+
+- **labeledData**: Manually labeled water level images with bounding box annotations. Each image has corresponding `.txt` label files in YOLO format (class_id x_center y_center width height). This is the original dataset without augmentation.
+
+- **augmentedDataSet** (inside YOLO_n+s_local): Enhanced version of labeledData with data augmentation techniques (rotation, scaling, brightness adjustments, etc.). Contains more training samples through augmentation. **Recommended for training** as it provides better generalization.
+
+**Recommendation**: Use `augmentedDataSet` in `YOLO_n+s_local/` for training your models to benefit from increased dataset size and improved generalization through augmentation techniques.
 
 ### Quick Start: Local Training (YOLOv8 Nano/Small)
 
