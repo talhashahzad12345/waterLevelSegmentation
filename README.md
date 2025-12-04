@@ -354,6 +354,7 @@ Mobile SAM benefits:
 ```text
 waterLevel_YOLO/
 ├── README.md
+├── Talha_Atif_Presentation.pptx     # Project presentation
 ├── visualGuage/                     # Visual gauging with YOLOv8
 │   ├── rawData/                     # Unlabeled raw images
 │   ├── labeledData/                 # Manually labeled images
