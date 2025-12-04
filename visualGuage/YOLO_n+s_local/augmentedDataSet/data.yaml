@@ -1,0 +1,13 @@
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 12
+names: ['0.2', '0.3', '0.4', '1', '1.1', '1.2', '1.3', '1.5', '2.1', '2.3', 'Water Level', 'staff gauge']
+
+roboflow:
+  workspace: watersegmentation-zsbtl
+  project: my-first-project-q9p6z
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/watersegmentation-zsbtl/my-first-project-q9p6z/dataset/1
