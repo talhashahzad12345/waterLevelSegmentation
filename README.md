@@ -93,11 +93,10 @@ visualGuage/
 │   └── (Unlabeled raw images from water level monitoring)
 │
 ├── labeledData/
-│   ├── data.yaml
 │   ├── train/
 │   │   ├── images/
 │   │   └── labels/
-│   ├── val/
+│   ├── valid/
 │   │   ├── images/
 │   │   └── labels/
 │   └── test/
@@ -110,29 +109,45 @@ visualGuage/
 │   │   ├── train/
 │   │   │   ├── images/
 │   │   │   └── labels/
-│   │   ├── val/
+│   │   ├── valid/
 │   │   │   ├── images/
 │   │   │   └── labels/
-│   │   └── test/
-│   │       ├── images/
-│   │       └── labels/
+│   │   ├── test/
+│   │   │   ├── images/
+│   │   │   └── labels/
+│   │   └── visualizeLabeledData.py
 │   ├── yolov8.ipynb
 │   ├── yolov8n.pt
-│   └── yolov8s.pt
+│   ├── yolov8s.pt
+│   ├── runs/
+│   ├── runs_waterlevel/
+│   └── viz_images/
 │
 └── YOLOv8l_colab/
-    └── YOLOV8l_Colab.ipynb
+    ├── YOLOV8l_Colab.ipynb
+    └── augmentedDataSet/
+        ├── data.yaml
+        ├── train/
+        │   ├── images/
+        │   └── labels/
+        ├── valid/
+        │   ├── images/
+        │   └── labels/
+        ├── test/
+        │   ├── images/
+        │   └── labels/
+        └── visualizeLabeledData.py
 ```
 
 **Dataset Descriptions**:
 
 - **rawData**: Original unlabeled images from water level monitoring cameras. Use these for initial exploration or to create custom annotations.
 
-- **labeledData**: Manually labeled water level images with bounding box annotations. Each image has corresponding `.txt` label files in YOLO format (class_id x_center y_center width height). This is the original dataset without augmentation.
+- **labeledData**: Manually labeled water level images with bounding box annotations. Organized in train/valid/test splits. Each image has corresponding `.txt` label files in YOLO format (class_id x_center y_center width height). This is the original dataset without augmentation.
 
-- **augmentedDataSet** (inside YOLO_n+s_local): Enhanced version of labeledData with data augmentation techniques (rotation, scaling, brightness adjustments, etc.). Contains more training samples through augmentation. **Recommended for training** as it provides better generalization.
+- **augmentedDataSet**: Enhanced version of labeledData with data augmentation techniques (rotation, scaling, brightness adjustments, etc.). Located in both YOLO_n+s_local and YOLOv8l_colab directories with their own copies. Contains more training samples through augmentation. **Recommended for training** as it provides better generalization.
 
-**Recommendation**: Use `augmentedDataSet` in `YOLO_n+s_local/` for training your models to benefit from increased dataset size and improved generalization through augmentation techniques.
+**Recommendation**: Use `augmentedDataSet` for training your models to benefit from increased dataset size and improved generalization through augmentation techniques. Each training setup (local and Colab) has its own copy of augmentedDataSet.
 
 ### Quick Start: Local Training (YOLOv8 Nano/Small)
 
@@ -338,26 +353,55 @@ Mobile SAM benefits:
 
 ```text
 waterLevel_YOLO/
-├── visualGuage/
-│   ├── YOLO_n+s_local/              # Local training (CPU/GPU friendly)
-│   │   ├── yolov8.ipynb             # Training and inference notebook
-│   │   ├── augmentedDataSet/        # Augmented training data with labels
-│   │   ├── labeledData/             # Original labeled images
-│   │   ├── runs_waterlevel/         # Training results and weights
-│   │   └── yolov8n.pt, yolov8s.pt   # Pre-trained weights
+├── README.md
+├── visualGuage/                     # Visual gauging with YOLOv8
+│   ├── rawData/                     # Unlabeled raw images
+│   ├── labeledData/                 # Manually labeled images
+│   │   ├── data.yaml
+│   │   ├── train/
+│   │   │   ├── images/
+│   │   │   └── labels/
+│   │   ├── valid/
+│   │   │   ├── images/
+│   │   │   └── labels/
+│   │   └── test/
+│   │       ├── images/
+│   │       └── labels/
 │   │
-│   └── YOLOv8l_colab/               # GPU-optimized for Google Colab
-│       └── YOLOV8l_Colab.ipynb      # Colab notebook with large model training
+│   ├── YOLO_n+s_local/              # Local training (CPU/GPU)
+│   │   ├── yolov8.ipynb             # Training and inference notebook
+│   │   ├── yolov8n.pt               # YOLOv8 Nano pre-trained weights
+│   │   ├── yolov8s.pt               # YOLOv8 Small pre-trained weights
+│   │   ├── augmentedDataSet/        # Labeled + augmented training data
+│   │   │   ├── data.yaml
+│   │   │   ├── train/
+│   │   │   ├── valid/
+│   │   │   ├── test/
+│   │   │   ├── visualizeLabeledData.py
+│   │   │   └── viz_images/
+│   │   ├── runs/                    # Training results
+│   │   ├── runs_waterlevel/         # Water level detection results
+│   │   └── viz_images/
+│   │
+│   └── YOLOv8l_colab/               # Cloud training (Google Colab GPU/TPU)
+│       ├── YOLOV8l_Colab.ipynb      # Colab notebook for YOLOv8 Large
+│       └── augmentedDataSet/        # Labeled + augmented training data
+│           ├── data.yaml
+│           ├── train/
+│           ├── valid/
+│           ├── test/
+│           ├── visualizeLabeledData.py
+│           └── viz_images/
 │
 └── virtualGuage/                    # Virtual gauging with segmentation
     ├── SegFormer.ipynb              # SegFormer segmentation model
     ├── SAM.ipynb                    # Segment Anything Model
     ├── Mobile_SAM.ipynb             # Mobile-optimized SAM
-    └── Dataset/                     # Segmentation dataset with pixel masks
+    └── Dataset/                     # Segmentation dataset with masks
         ├── train/
         │   ├── images/
         │   └── masks/
-        ├── val/
+        ├── valid/
         │   ├── images/
         │   └── masks/
         └── test/
